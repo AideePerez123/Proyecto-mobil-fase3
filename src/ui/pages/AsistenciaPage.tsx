@@ -1,229 +1,144 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
+import { FaUserShield, FaSignOutAlt, FaCircle } from 'react-icons/fa'
 
 const padresFalsos = [
-  {
-    id: 'p1',
-    nombre: 'Padre de Carlos',
-    email: 'padre.carlos@ejemplo.com',
-    password: '1234',
-    hijoId: 1,
-    hijoCarnet: 'C-1001',
-  },
-  {
-    id: 'p2',
-    nombre: 'Padre de Ana',
-    email: 'padre.ana@ejemplo.com',
-    password: '5678',
-    hijoId: 2,
-    hijoCarnet: 'A-1002',
-  },
+  { id: 'p1', nombre: 'Padre de Carlos', email: 'padre.carlos@ejemplo.com', password: '1234', hijosIds: [1] },
+  { id: 'p2', nombre: 'Padre de Ana', email: 'padre.ana@ejemplo.com', password: '5678', hijosIds: [2] },
 ]
 
 const alumnosFalsos = [
-  {
-    id: 1,
-    nombre: 'Carlos García',
-    carnet: 'C-1001',
-    grupo: 'Fútbol Infantil A',
-    entrada: '14:00',
-    salida: '16:00',
-    estado: 'Presente',
-    padreId: 'p1',
-  },
-  {
-    id: 2,
-    nombre: 'Ana López',
-    carnet: 'A-1002',
-    grupo: 'Voleibol Juvenil',
-    entrada: '14:05',
-    salida: '--:--',
-    estado: 'En clase',
-    padreId: 'p2',
-  },
-  {
-    id: 3,
-    nombre: 'José Ramírez',
-    carnet: 'J-1003',
-    grupo: 'Básquetbol Pre-Infantil',
-    entrada: '--:--',
-    salida: '--:--',
-    estado: 'Ausente',
-    padreId: 'p1',
-  },
+  { id: 1, nombre: 'Carlos García', grupo: 'Fútbol Infantil A', entrada: '14:00', salida: '16:00', estado: 'Presente', deporte: 'futbol' },
+  { id: 2, nombre: 'Ana López', grupo: 'Voleibol Juvenil', entrada: '14:05', salida: '--:--', estado: 'En clase', deporte: 'voley' },
+  { id: 3, nombre: 'José Ramírez', grupo: 'Básquetbol Pre-Infantil', entrada: '--:--', salida: '--:--', estado: 'Ausente', deporte: 'basquet' },
 ]
 
 export default function AsistenciaPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [carnetHijo, setCarnetHijo] = useState('')
   const [padreActivoId, setPadreActivoId] = useState<string | null>(null)
   const [errorLogin, setErrorLogin] = useState('')
 
-  const padreActivo = padresFalsos.find((padre) => padre.id === padreActivoId)
-
-  const alumnoVisible = useMemo(() => {
-    if (!padreActivo) return null
-    return alumnosFalsos.find(
-      (alumno) => alumno.id === padreActivo.hijoId && alumno.carnet === carnetHijo.trim()
-    )
-  }, [padreActivo, carnetHijo])
-
-  const presentes = alumnoVisible?.estado === 'Presente' ? 1 : 0
-  const enClase = alumnoVisible?.estado === 'En clase' ? 1 : 0
-  const ausentes = alumnoVisible?.estado === 'Ausente' ? 1 : 0
+  const padreActivo = padresFalsos.find((p) => p.id === padreActivoId)
+  const hijosDelPadre = padreActivo ? alumnosFalsos.filter(a => padreActivo.hijosIds.includes(a.id)) : []
 
   const handleLogin = () => {
     setErrorLogin('')
+    const emailLimpio = email.trim()
+    const passwordLimpio = password.trim()
 
-    const padreEncontrado = padresFalsos.find((padre) => padre.email === email.trim())
+    if (!emailLimpio || !passwordLimpio) {
+      setErrorLogin('Por favor, ingresa correo y contraseña.')
+      return
+    }
+
+    const padreEncontrado = padresFalsos.find((p) => p.email === emailLimpio)
     if (!padreEncontrado) {
-      setErrorLogin('Correo no registrado. Usa uno de los padres simulados.')
-      setPadreActivoId(null)
+      setErrorLogin('Correo no registrado.')
       return
     }
 
-    if (padreEncontrado.password !== password) {
+    if (padreEncontrado.password !== passwordLimpio) {
       setErrorLogin('Contraseña incorrecta.')
-      setPadreActivoId(null)
-      return
-    }
-
-    if (!carnetHijo.trim()) {
-      setErrorLogin('Ingresa el número de carné de tu hijo.')
-      setPadreActivoId(null)
-      return
-    }
-
-    if (padreEncontrado.hijoCarnet !== carnetHijo.trim()) {
-      setErrorLogin('El carné no coincide con el hijo asignado a esta cuenta.')
-      setPadreActivoId(null)
       return
     }
 
     setPadreActivoId(padreEncontrado.id)
-    setErrorLogin('')
   }
 
   const handleLogout = () => {
     setPadreActivoId(null)
     setEmail('')
     setPassword('')
-    setCarnetHijo('')
     setErrorLogin('')
   }
 
+  const getBorderColor = (deporte: string) => {
+    switch(deporte) {
+      case 'futbol': return 'border-l-football-green';
+      case 'basquet': return 'border-l-basketball-orange';
+      default: return 'border-l-volleyball-blue';
+    }
+  }
+
   return (
-    <div className="px-4 pt-6">
-      <h1 className="text-2xl font-bold mb-2">Asistencia para Padres</h1>
-      <p className="text-base-content/70 mb-6">
-        Ingresa tus credenciales y la de tu hij@
-      </p>
+    <div className="px-4 pt-6 pb-10 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-base-content mb-2 flex items-center gap-3">
+          <FaUserShield className="text-secondary" /> Portal de Padres
+        </h1>
+        <p className="text-base-content/70 font-medium">Monitorea la asistencia y seguridad de tus hijos en tiempo real.</p>
+      </div>
 
       {!padreActivo ? (
-        <div className="card bg-base-100 shadow-md mb-6">
-          <div className="card-body">
-            <h2 className="font-semibold text-lg mb-4">Ingreso de padre</h2>
-            <div className="grid gap-4">
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input input-bordered w-full"
-              />
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input input-bordered w-full"
-              />
-              <input
-                type="text"
-                placeholder="Carné del hijo"
-                value={carnetHijo}
-                onChange={(e) => setCarnetHijo(e.target.value)}
-                className="input input-bordered w-full"
-              />
-              <button type="button" onClick={handleLogin} className="btn btn-primary w-full">
-                Ver asistencia
+        <div className="glass-panel rounded-3xl p-1 border-t-4 border-t-secondary/50">
+          <div className="bg-base-100/80 rounded-[1.35rem] p-6 backdrop-blur-xl">
+            <h2 className="font-bold text-xl text-base-content mb-6">Iniciar Sesión</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Correo Electrónico</label>
+                <input type="email" placeholder="ejemplo@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-secondary transition-all" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Contraseña</label>
+                <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-secondary transition-all" />
+              </div>
+              <button type="button" onClick={handleLogin} className="w-full bg-primary text-primary-content hover:from-secondary/90 hover:to-orange-500/90 text-base-content font-bold py-4 rounded-xl shadow-lg shadow-secondary/30 transition-all active:scale-95 mt-2">
+                Acceder al Portal
               </button>
-              {errorLogin && <p className="text-sm text-error mt-2">{errorLogin}</p>}
+              {errorLogin && <p className="text-sm text-error mt-2 font-medium bg-error/10 p-3 rounded-lg border border-error/20">{errorLogin}</p>}
+              
+              <div className="mt-4 p-4 bg-base-200/30 rounded-xl border border-base-content/ text-xs text-base-content/60">
+                <p><strong>Demo Credenciales:</strong></p>
+                <p>Correo: padre.carlos@ejemplo.com | Pass: 1234</p>
+                <p>Correo: padre.ana@ejemplo.com | Pass: 5678</p>
+              </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="card bg-base-100 shadow-md mb-6">
-          <div className="card-body">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h2 className="font-semibold text-lg">Bienvenido, {padreActivo.nombre}</h2>
-                <p className="text-sm text-base-content/70">Hijo asignado: {alumnoVisible?.nombre ?? 'No encontrado'}</p>
-              </div>
-              <button type="button" onClick={handleLogout} className="btn btn-outline btn-sm">
-                Cerrar sesión
-              </button>
+        <div className="animate-slide-up">
+          <div className="glass-panel rounded-2xl mb-8 p-5 flex flex-row items-center justify-between border-l-4 border-l-secondary">
+            <div>
+              <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider">Sesión Iniciada</p>
+              <h2 className="font-extrabold text-xl text-base-content mt-1">{padreActivo.nombre}</h2>
             </div>
+            <button type="button" onClick={handleLogout} className="btn btn-circle btn-ghost text-base-content/60 hover:text-base-content hover:bg-base-content/">
+              <FaSignOutAlt size={20} />
+            </button>
+          </div>
+
+          <h3 className="font-bold text-lg text-base-content mb-4">Estado de tus hijos hoy</h3>
+          <div className="flex flex-col gap-4">
+            {hijosDelPadre.map((alumno) => (
+              <div key={alumno.id} className={`glass-panel rounded-2xl border-l-4 ${getBorderColor(alumno.deporte)} overflow-hidden hover:scale-[1.01] transition-all`}>
+                <div className="p-5 bg-base-100/40">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-extrabold text-lg text-base-content">{alumno.nombre}</h3>
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border ${alumno.estado === 'Presente' ? 'bg-success/10 text-success border-success/20' : alumno.estado === 'En clase' ? 'bg-warning/10 text-warning border-warning/20' : 'bg-error/10 text-error border-error/20'}`}>
+                      <FaCircle className="w-2 h-2" /> {alumno.estado}
+                    </div>
+                  </div>
+                  <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-4 bg-base-200/50 inline-block px-3 py-1 rounded-md">{alumno.grupo}</p>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm bg-base-200/30 p-3 rounded-xl border border-base-content/">
+                    <div>
+                      <p className="text-xs text-base-content/50 uppercase font-bold mb-1">Entrada</p>
+                      <p className="font-bold text-base-content flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-success"></span> {alumno.entrada}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-base-content/50 uppercase font-bold mb-1">Salida</p>
+                      <p className="font-bold text-base-content flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-error"></span> {alumno.salida}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      )}
-
-      {padreActivo && (
-        <>
-          {!alumnoVisible ? (
-            <div className="alert alert-error shadow-lg mb-6">
-              <div>
-                <span>El carné ingresado no coincide con el hijo asignado a esta cuenta</span>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="stats stats-vertical sm:stats-horizontal shadow w-full mb-6">
-                <div className="stat">
-                  <div className="stat-title">Presentes</div>
-                  <div className="stat-value text-primary">{presentes}</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-title">En clase</div>
-                  <div className="stat-value text-secondary">{enClase}</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-title">Ausentes</div>
-                  <div className="stat-value text-error">{ausentes}</div>
-                </div>
-              </div>
-
-              <div className="card bg-base-100 shadow-sm mb-6">
-                <div className="card-body p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-bold text-base">{alumnoVisible.nombre}</h3>
-                      <p className="text-xs text-base-content/60">{alumnoVisible.grupo}</p>
-                    </div>
-                    <div
-                      className={`badge badge-lg ${
-                        alumnoVisible.estado === 'Presente'
-                          ? 'badge-success'
-                          : alumnoVisible.estado === 'En clase'
-                          ? 'badge-warning'
-                          : 'badge-error'
-                      }`}
-                    >
-                      {alumnoVisible.estado}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:gap-6 mt-3 text-sm text-base-content/80">
-                    <span>Entrada: <strong>{alumnoVisible.entrada}</strong></span>
-                    <span>Salida: <strong>{alumnoVisible.salida}</strong></span>
-                  </div>
-                  <p className="mt-4 text-sm text-base-content/70">
-                    Carné: {alumnoVisible.carnet}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-        </>
       )}
     </div>
   )

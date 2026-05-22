@@ -1,0 +1,778 @@
+src/ui/app/Router.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Layout from '../components/layout/Layout'
+import HomePage from '../pages/HomePage'
+import ReservasPage from '../pages/ResevasPage'
+import PadrinosPage from '../pages/PadrinosPage'
+import AsistenciaPage from '../pages/AsistenciaPage'
+import JovenesPage from '../pages/JovenesPage'
+import VotacionesPage from '../pages/VotacionesPage'
+
+export default function Router() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="reservas" element={<ReservasPage />} />
+          <Route path="padrinos" element={<PadrinosPage />} />
+          <Route path="asistencia" element={<AsistenciaPage />} />
+          <Route path="votaciones" element={<VotacionesPage />} />
+          <Route path="jovenes" element={<JovenesPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+
+
+src/ui/components/layout/Layout.tsx
+import { NavLink, Outlet } from 'react-router-dom'
+import { FaHome, FaCalendarCheck, FaHandsHelping, FaClipboardCheck, FaVoteYea, FaStar, FaMoon, FaSun } from 'react-icons/fa'
+import { useState, useEffect } from 'react'
+
+export default function Layout() {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-base-100 transition-colors duration-300">
+      
+      {/* Top Navbar */}
+      <header className="glass-navbar sticky top-0 z-50 text-base-content shadow-lg">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-extrabold tracking-tight text-primary drop-shadow-sm">
+              COMTRIN
+            </span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex gap-1 items-center">
+            <NavLink to="/" end className={({ isActive }) => `px-4 py-2 rounded-full font-medium transition-all ${isActive ? 'bg-base-content/10 text-base-content' : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'}`}>Inicio</NavLink>
+            <NavLink to="/reservas" className={({ isActive }) => `px-4 py-2 rounded-full font-medium transition-all ${isActive ? 'bg-base-content/10 text-base-content' : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'}`}>Reservas</NavLink>
+            <NavLink to="/padrinos" className={({ isActive }) => `px-4 py-2 rounded-full font-medium transition-all ${isActive ? 'bg-base-content/10 text-base-content' : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'}`}>Padrinos</NavLink>
+            <NavLink to="/asistencia" className={({ isActive }) => `px-4 py-2 rounded-full font-medium transition-all ${isActive ? 'bg-base-content/10 text-base-content' : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'}`}>Asistencia</NavLink>
+            <NavLink to="/votaciones" className={({ isActive }) => `px-4 py-2 rounded-full font-medium transition-all ${isActive ? 'bg-base-content/10 text-base-content' : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'}`}>Votar</NavLink>
+            <NavLink to="/jovenes" className={({ isActive }) => `px-4 py-2 rounded-full font-medium transition-all ${isActive ? 'bg-base-content/10 text-base-content' : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'}`}>Jóvenes</NavLink>
+            
+            <button onClick={toggleTheme} className="ml-4 p-2 rounded-full hover:bg-base-content/10 transition-colors">
+              {theme === 'light' ? <FaMoon className="text-base-content/70" /> : <FaSun className="text-warning" />}
+            </button>
+          </nav>
+          
+          {/* Mobile Theme Toggle */}
+          <div className="md:hidden">
+            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-base-content/10 transition-colors">
+              {theme === 'light' ? <FaMoon className="text-base-content/70" /> : <FaSun className="text-warning" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 w-full max-w-5xl mx-auto pb-24 md:pb-8">
+        <Outlet />
+      </main>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 glass-navbar border-t border-base-content/ pb-safe z-50">
+        <div className="flex justify-around items-center p-2">
+          <NavLink to="/" end className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition-all ${isActive ? 'text-base-content bg-base-content/' : 'text-base-content/50'}`}>
+            <FaHome className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-medium">Inicio</span>
+          </NavLink>
+          <NavLink to="/reservas" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition-all ${isActive ? 'text-football-green bg-football-green/10' : 'text-base-content/50'}`}>
+            <FaCalendarCheck className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-medium">Reservas</span>
+          </NavLink>
+          <NavLink to="/padrinos" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition-all ${isActive ? 'text-volleyball-blue bg-volleyball-blue/10' : 'text-base-content/50'}`}>
+            <FaHandsHelping className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-medium">Padrinos</span>
+          </NavLink>
+          <NavLink to="/asistencia" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition-all ${isActive ? 'text-basketball-orange bg-basketball-orange/10' : 'text-base-content/50'}`}>
+            <FaClipboardCheck className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-medium">Asistencia</span>
+          </NavLink>
+          <NavLink to="/votaciones" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition-all ${isActive ? 'text-primary bg-primary/10' : 'text-base-content/50'}`}>
+            <FaVoteYea className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-medium">Votar</span>
+          </NavLink>
+          <NavLink to="/jovenes" className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition-all ${isActive ? 'text-secondary bg-secondary/10' : 'text-base-content/50'}`}>
+            <FaStar className="w-5 h-5 mb-1" />
+            <span className="text-[10px] font-medium">Jóvenes</span>
+          </NavLink>
+        </div>
+      </div>
+
+    </div>
+  )
+}
+
+
+src/ui/pages/AsistenciaPage.tsx
+import { useState } from 'react'
+import { FaUserShield, FaSignOutAlt, FaCircle } from 'react-icons/fa'
+
+const padresFalsos = [
+  { id: 'p1', nombre: 'Padre de Carlos', email: 'padre.carlos@ejemplo.com', password: '1234', hijosIds: [1] },
+  { id: 'p2', nombre: 'Padre de Ana', email: 'padre.ana@ejemplo.com', password: '5678', hijosIds: [2] },
+]
+
+const alumnosFalsos = [
+  { id: 1, nombre: 'Carlos García', grupo: 'Fútbol Infantil A', entrada: '14:00', salida: '16:00', estado: 'Presente', deporte: 'futbol' },
+  { id: 2, nombre: 'Ana López', grupo: 'Voleibol Juvenil', entrada: '14:05', salida: '--:--', estado: 'En clase', deporte: 'voley' },
+  { id: 3, nombre: 'José Ramírez', grupo: 'Básquetbol Pre-Infantil', entrada: '--:--', salida: '--:--', estado: 'Ausente', deporte: 'basquet' },
+]
+
+export default function AsistenciaPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [padreActivoId, setPadreActivoId] = useState<string | null>(null)
+  const [errorLogin, setErrorLogin] = useState('')
+
+  const padreActivo = padresFalsos.find((p) => p.id === padreActivoId)
+  const hijosDelPadre = padreActivo ? alumnosFalsos.filter(a => padreActivo.hijosIds.includes(a.id)) : []
+
+  const handleLogin = () => {
+    setErrorLogin('')
+    const emailLimpio = email.trim()
+    const passwordLimpio = password.trim()
+
+    if (!emailLimpio || !passwordLimpio) {
+      setErrorLogin('Por favor, ingresa correo y contraseña.')
+      return
+    }
+
+    const padreEncontrado = padresFalsos.find((p) => p.email === emailLimpio)
+    if (!padreEncontrado) {
+      setErrorLogin('Correo no registrado.')
+      return
+    }
+
+    if (padreEncontrado.password !== passwordLimpio) {
+      setErrorLogin('Contraseña incorrecta.')
+      return
+    }
+
+    setPadreActivoId(padreEncontrado.id)
+  }
+
+  const handleLogout = () => {
+    setPadreActivoId(null)
+    setEmail('')
+    setPassword('')
+    setErrorLogin('')
+  }
+
+  const getBorderColor = (deporte: string) => {
+    switch(deporte) {
+      case 'futbol': return 'border-l-football-green';
+      case 'basquet': return 'border-l-basketball-orange';
+      default: return 'border-l-volleyball-blue';
+    }
+  }
+
+  return (
+    <div className="px-4 pt-6 pb-10 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-base-content mb-2 flex items-center gap-3">
+          <FaUserShield className="text-secondary" /> Portal de Padres
+        </h1>
+        <p className="text-base-content/70 font-medium">Monitorea la asistencia y seguridad de tus hijos en tiempo real.</p>
+      </div>
+
+      {!padreActivo ? (
+        <div className="glass-panel rounded-3xl p-1 border-t-4 border-t-secondary/50">
+          <div className="bg-base-100/80 rounded-[1.35rem] p-6 backdrop-blur-xl">
+            <h2 className="font-bold text-xl text-base-content mb-6">Iniciar Sesión</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Correo Electrónico</label>
+                <input type="email" placeholder="ejemplo@correo.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-secondary transition-all" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Contraseña</label>
+                <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-secondary transition-all" />
+              </div>
+              <button type="button" onClick={handleLogin} className="w-full bg-primary text-primary-content hover:from-secondary/90 hover:to-orange-500/90 text-base-content font-bold py-4 rounded-xl shadow-lg shadow-secondary/30 transition-all active:scale-95 mt-2">
+                Acceder al Portal
+              </button>
+              {errorLogin && <p className="text-sm text-error mt-2 font-medium bg-error/10 p-3 rounded-lg border border-error/20">{errorLogin}</p>}
+              
+              <div className="mt-4 p-4 bg-base-200/30 rounded-xl border border-base-content/ text-xs text-base-content/60">
+                <p><strong>Demo Credenciales:</strong></p>
+                <p>Correo: padre.carlos@ejemplo.com | Pass: 1234</p>
+                <p>Correo: padre.ana@ejemplo.com | Pass: 5678</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="animate-slide-up">
+          <div className="glass-panel rounded-2xl mb-8 p-5 flex flex-row items-center justify-between border-l-4 border-l-secondary">
+            <div>
+              <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider">Sesión Iniciada</p>
+              <h2 className="font-extrabold text-xl text-base-content mt-1">{padreActivo.nombre}</h2>
+            </div>
+            <button type="button" onClick={handleLogout} className="btn btn-circle btn-ghost text-base-content/60 hover:text-base-content hover:bg-base-content/">
+              <FaSignOutAlt size={20} />
+            </button>
+          </div>
+
+          <h3 className="font-bold text-lg text-base-content mb-4">Estado de tus hijos hoy</h3>
+          <div className="flex flex-col gap-4">
+            {hijosDelPadre.map((alumno) => (
+              <div key={alumno.id} className={`glass-panel rounded-2xl border-l-4 ${getBorderColor(alumno.deporte)} overflow-hidden hover:scale-[1.01] transition-all`}>
+                <div className="p-5 bg-base-100/40">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-extrabold text-lg text-base-content">{alumno.nombre}</h3>
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border ${alumno.estado === 'Presente' ? 'bg-success/10 text-success border-success/20' : alumno.estado === 'En clase' ? 'bg-warning/10 text-warning border-warning/20' : 'bg-error/10 text-error border-error/20'}`}>
+                      <FaCircle className="w-2 h-2" /> {alumno.estado}
+                    </div>
+                  </div>
+                  <p className="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-4 bg-base-200/50 inline-block px-3 py-1 rounded-md">{alumno.grupo}</p>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm bg-base-200/30 p-3 rounded-xl border border-base-content/">
+                    <div>
+                      <p className="text-xs text-base-content/50 uppercase font-bold mb-1">Entrada</p>
+                      <p className="font-bold text-base-content flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-success"></span> {alumno.entrada}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-base-content/50 uppercase font-bold mb-1">Salida</p>
+                      <p className="font-bold text-base-content flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-error"></span> {alumno.salida}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+
+src/ui/pages/HomePage.tsx
+import { useNavigate } from 'react-router-dom'
+import { FaFutbol, FaBasketballBall, FaVolleyballBall, FaCalendarAlt, FaUserCheck, FaHandsHelping, FaTrophy, FaVoteYea } from "react-icons/fa";
+
+export default function HomePage() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="pb-10 animate-fade-in">
+      
+      {/* Hero Section */}
+      <div className="relative w-full h-[400px] md:h-[500px] md:rounded-b-3xl overflow-hidden shadow-2xl mb-8 -mt-4 md:mt-0 bg-base-300 group">
+        <img 
+          src="/hero_banner.png" 
+          alt="Academia" 
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-base-content mb-2 tracking-tight drop-shadow-lg">
+            Academia <span className="text-primary">Comtrin</span>
+          </h1>
+          <p className="text-lg md:text-xl text-base-content/ font-medium max-w-2xl">
+            Formando campeones en el Barrio el Gallito a través del deporte y la disciplina.
+          </p>
+          
+          <div className="flex gap-4 mt-6">
+            <span className="flex items-center gap-2 bg-football-green text-base-content px-4 py-2 rounded-full font-bold shadow-md hover:scale-105 transition-transform">
+              <FaFutbol /> Fútbol
+            </span>
+            <span className="flex items-center gap-2 bg-basketball-orange text-base-content px-4 py-2 rounded-full font-bold shadow-md hover:scale-105 transition-transform">
+              <FaBasketballBall /> Básquet
+            </span>
+            <span className="flex items-center gap-2 bg-volleyball-blue text-base-content px-4 py-2 rounded-full font-bold shadow-md hover:scale-105 transition-transform">
+              <FaVolleyballBall /> Vóley
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 md:px-0 space-y-10">
+        
+        {/* Intro Card */}
+        <div className="glass-panel rounded-3xl p-6 relative overflow-hidden transition-all duration-500 hover:shadow-2xl">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+          <h2 className="text-xl font-bold mb-3 flex items-center gap-2 text-base-content">
+            <FaTrophy className="text-warning" /> ¿De qué trata esta app?
+          </h2>
+          <p className="text-base-content/80 leading-relaxed font-medium">
+            Somos una academia deportiva sin fines de lucro ubicada en el Barrio el Gallito. Nuestra misión es ofrecer un espacio seguro de formación para jóvenes de 5 a 18 años. Aquí podrás reservar la cancha para tus partidos nocturnos, apadrinar a un joven en situación vulnerable, y como padre, monitorear la asistencia de tu hijo en tiempo real.
+          </p>
+        </div>
+
+        {/* Acceso Rápido Grid */}
+        <div>
+          <h3 className="font-bold text-2xl mb-5 text-base-content">Acceso Rápido</h3>
+          <div className="grid grid-cols-2 gap-4">
+            
+            <button onClick={() => navigate('/reservas')} className="group relative overflow-hidden glass-panel rounded-3xl p-6 text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-football-green/20">
+              <div className="absolute inset-0 bg-football-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="bg-football-green/20 text-football-green w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                <FaCalendarAlt size={24} />
+              </div>
+              <h4 className="font-bold text-lg text-base-content mb-1">Reservas</h4>
+              <p className="text-xs text-base-content/60">Canchas nocturnas</p>
+            </button>
+
+            <button onClick={() => navigate('/asistencia')} className="group relative overflow-hidden glass-panel rounded-3xl p-6 text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-basketball-orange/20">
+              <div className="absolute inset-0 bg-basketball-orange/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="bg-basketball-orange/20 text-basketball-orange w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                <FaUserCheck size={24} />
+              </div>
+              <h4 className="font-bold text-lg text-base-content mb-1">Asistencia</h4>
+              <p className="text-xs text-base-content/60">Portal de padres</p>
+            </button>
+
+            <button onClick={() => navigate('/padrinos')} className="group relative overflow-hidden glass-panel rounded-3xl p-6 text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-volleyball-blue/20">
+              <div className="absolute inset-0 bg-volleyball-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="bg-volleyball-blue/20 text-volleyball-blue w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                <FaHandsHelping size={24} />
+              </div>
+              <h4 className="font-bold text-lg text-base-content mb-1">Padrinos</h4>
+              <p className="text-xs text-base-content/60">Apoya un talento</p>
+            </button>
+
+            <button onClick={() => navigate('/votaciones')} className="group relative overflow-hidden glass-panel rounded-3xl p-6 text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-primary/20">
+              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="bg-primary/20 text-primary w-14 h-14 rounded-2xl flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                <FaVoteYea size={24} />
+              </div>
+              <h4 className="font-bold text-lg text-base-content mb-1">Torneos</h4>
+              <p className="text-xs text-base-content/60">Vota por el próximo</p>
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+
+src/ui/pages/JovenesPage.tsx
+import { FaStar } from 'react-icons/fa'
+
+const mensajesFalsos = [
+  { id: 1, titulo: "El trabajo en equipo", texto: "Juntos somos más fuertes. En la cancha aprendemos a confiar los unos en los otros y a luchar por un mismo objetivo.", img: "https://placehold.co/800x600/10b981/ffffff?text=Trabajo+en+Equipo", deporte: "futbol", color: "text-football-green", bg: "bg-football-green" },
+  { id: 2, titulo: "Disciplina diaria", texto: "Llegar a entrenar incluso cuando estás cansado es el primer paso para ser campeón no solo en la cancha, sino en la vida.", img: "https://placehold.co/800x600/f97316/ffffff?text=Disciplina", deporte: "basquet", color: "text-basketball-orange", bg: "bg-basketball-orange" },
+  { id: 3, titulo: "Respeto ante todo", texto: "Respetar a tus compañeros, rivales y entrenadores te hace grande. El verdadero trofeo es el carácter que forjas.", img: "https://placehold.co/800x600/0ea5e9/ffffff?text=Respeto", deporte: "voley", color: "text-volleyball-blue", bg: "bg-volleyball-blue" },
+]
+
+export default function JovenesPage() {
+  return (
+    <div className="px-4 pt-6 pb-10 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-base-content mb-2 flex items-center gap-3">
+          <FaStar className="text-secondary" /> Club de Jóvenes
+        </h1>
+        <p className="text-base-content/70 font-medium">Inspiración y valores para tu día a día en la academia.</p>
+      </div>
+
+      <div className="flex flex-col gap-8">
+        {mensajesFalsos.map((m) => (
+          <div key={m.id} className="group relative rounded-3xl overflow-hidden shadow-2xl h-[400px]">
+            <img 
+              src={m.img} 
+              alt={m.titulo} 
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-primary text-primary-content"></div>
+            
+            {/* Tag del deporte */}
+            <div className="absolute top-4 right-4">
+              <span className={`px-4 py-1.5 rounded-full ${m.bg}/20 backdrop-blur-md ${m.color} text-xs font-bold border border-base-content/ uppercase tracking-widest`}>
+                {m.deporte}
+              </span>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 transform transition-transform duration-500">
+              <h2 className="font-extrabold text-2xl md:text-3xl text-base-content mb-3 tracking-tight drop-shadow-md">
+                {m.titulo}
+              </h2>
+              <p className="text-base-content/ font-medium text-sm md:text-base leading-relaxed max-w-2xl drop-shadow-sm">
+                "{m.texto}"
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+
+src/ui/pages/PadrinosPage.tsx
+import { useState } from 'react'
+import { FaHandsHelping, FaHeart } from 'react-icons/fa'
+
+export default function PadrinosPage() {
+  const [form, setForm] = useState({ nombre: '', email: '', mensaje: '' })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    alert(`Gracias ${form.nombre}, pronto nos pondremos en contacto para apadrinar a un joven.`)
+    setForm({ nombre: '', email: '', mensaje: '' })
+  }
+
+  return (
+    <div className="px-4 pt-6 pb-10 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-base-content mb-2 flex items-center gap-3">
+          <FaHandsHelping className="text-volleyball-blue" /> Hazte Padrino
+        </h1>
+        <p className="text-base-content/70 font-medium">Cambia la vida de un joven a través del deporte y la educación.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        
+        {/* Inspiracional */}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl h-[300px] md:h-auto group bg-base-300">
+          <img 
+            src="/padrinos_image.png" 
+            alt="Apadrina un joven" 
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+          />
+          <div className="absolute inset-0 bg-primary text-primary-content"></div>
+          <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+            <h2 className="font-extrabold text-2xl text-base-content mb-2 tracking-tight">¿Por qué ser padrino?</h2>
+            <p className="text-base-content/ font-medium text-sm md:text-base leading-relaxed">
+              Con tu donación, un niño o joven podrá acceder a entrenamiento, uniformes y materiales deportivos. Sé el héroe de su historia.
+            </p>
+            <div className="flex gap-3 mt-4">
+              <span className="px-3 py-1 rounded-full bg-football-green/20 backdrop-blur-md text-football-green text-xs font-bold border border-football-green/30">Fútbol</span>
+              <span className="px-3 py-1 rounded-full bg-basketball-orange/20 backdrop-blur-md text-basketball-orange text-xs font-bold border border-basketball-orange/30">Básquet</span>
+              <span className="px-3 py-1 rounded-full bg-volleyball-blue/20 backdrop-blur-md text-volleyball-blue text-xs font-bold border border-volleyball-blue/30">Vóley</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Formulario */}
+        <div className="glass-panel rounded-3xl p-1 border-t-4 border-t-volleyball-blue">
+          <div className="bg-base-100/80 rounded-[1.35rem] p-6 md:p-8 backdrop-blur-xl">
+            <h2 className="font-bold text-xl text-base-content mb-6 flex items-center gap-2">
+              <FaHeart className="text-error" /> Formulario de interés
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Nombre Completo</label>
+                <input type="text" placeholder="Ej. Ana Rodríguez" value={form.nombre} onChange={e => setForm({...form, nombre: e.target.value})} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-volleyball-blue transition-all" required />
+              </div>
+              
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Correo Electrónico</label>
+                <input type="email" placeholder="ejemplo@correo.com" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-volleyball-blue transition-all" required />
+              </div>
+              
+              <div>
+                <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">¿Por qué deseas apadrinar?</label>
+                <textarea placeholder="Me encantaría apoyar a los jóvenes de mi comunidad..." value={form.mensaje} onChange={e => setForm({...form, mensaje: e.target.value})} className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-volleyball-blue transition-all resize-none" rows={4}></textarea>
+              </div>
+              
+              <button type="submit" className="w-full bg-primary text-primary-content hover:from-volleyball-blue/90 hover:to-blue-600/90 text-base-content font-bold py-4 rounded-xl shadow-lg shadow-volleyball-blue/30 transition-all active:scale-95 mt-2">
+                Enviar Solicitud
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+src/ui/pages/ReservasPage.tsx
+import { useState } from 'react'
+import { FaChevronLeft, FaChevronRight, FaRegCalendarCheck, FaClock } from 'react-icons/fa'
+
+const horarios = [
+  { id: 1, hora: "18:00 - 19:00", turno: "Tarde", disponible: true, deporte: "futbol" },
+  { id: 2, hora: "20:00 - 21:00", turno: "Noche", disponible: false, deporte: "basquet" },
+  { id: 3, hora: "21:00 - 22:00", turno: "Noche", disponible: true, deporte: "voley" },
+]
+
+export default function ReservasPage() {
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<Date | null>(null);
+  const [vistaMes, setVistaMes] = useState(new Date());
+  const [mostrarFormulario, setMostrarFormulario] = useState<number | null>(null);
+
+  const year = vistaMes.getFullYear();
+  const month = vistaMes.getMonth();
+  const primerDiaSemana = new Date(year, month, 1).getDay();
+  const diasEnMes = new Date(year, month + 1, 0).getDate();
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+
+  const diasMes = Array.from({ length: diasEnMes }, (_, i) => i + 1);
+
+  const cambiarMes = (direccion: number) => {
+    setVistaMes(new Date(year, month + direccion, 1));
+    setFechaSeleccionada(null);
+    setMostrarFormulario(null);
+  };
+
+  const seleccionarDia = (dia: number) => {
+    const fecha = new Date(year, month, dia);
+    if (fecha >= hoy) {
+      setFechaSeleccionada(fecha);
+      setMostrarFormulario(null);
+    }
+  };
+
+  const getColorDeporte = (deporte: string) => {
+    switch(deporte) {
+      case 'futbol': return 'border-football-green shadow-football-green/20';
+      case 'basquet': return 'border-basketball-orange shadow-basketball-orange/20';
+      default: return 'border-volleyball-blue shadow-volleyball-blue/20';
+    }
+  }
+
+  return (
+    <div className="px-4 pt-6 pb-10 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-base-content mb-2 flex items-center gap-3">
+          <FaRegCalendarCheck className="text-primary" /> Reservar Cancha
+        </h1>
+        <p className="text-base-content/70 font-medium">Selecciona una fecha y un horario disponible para tu equipo.</p>
+      </div>
+      
+      {/* CALENDARIO */}
+      <div className="glass-panel rounded-3xl mb-8 p-1">
+        <div className="bg-base-100/50 rounded-[1.35rem] p-4 md:p-6">
+          <div className="flex justify-between items-center mb-6">
+            <button onClick={() => cambiarMes(-1)} className="btn btn-circle btn-sm btn-ghost hover:bg-base-content/ text-base-content">
+              <FaChevronLeft />
+            </button>
+            <span className="font-bold text-lg capitalize text-base-content tracking-wide">
+              {vistaMes.toLocaleString('es-ES', { month: 'long', year: 'numeric' })}
+            </span>
+            <button onClick={() => cambiarMes(1)} className="btn btn-circle btn-sm btn-ghost hover:bg-base-content/ text-base-content">
+              <FaChevronRight />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-bold text-base-content/50 mb-3 uppercase tracking-wider">
+            <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span>
+          </div>
+          
+          <div className="grid grid-cols-7 gap-1 md:gap-2 text-center">
+            {Array(primerDiaSemana).fill(null).map((_, i) => <div key={`v-${i}`} className="p-2" />)}
+            {diasMes.map((dia) => {
+              const fechaDia = new Date(year, month, dia);
+              const esPasado = fechaDia < hoy;
+              const esSeleccionado = fechaSeleccionada?.getDate() === dia;
+              
+              return (
+                <button key={dia} disabled={esPasado} onClick={() => seleccionarDia(dia)}
+                  className={`relative aspect-square flex items-center justify-center rounded-xl text-sm font-semibold transition-all
+                    ${esPasado ? 'text-base-content/20 cursor-not-allowed' : 'hover:bg-base-content/ cursor-pointer text-base-content/80'}
+                    ${esSeleccionado ? 'bg-primary text-base-content shadow-lg shadow-primary/30 scale-105' : ''}`}>
+                  {dia}
+                  {esSeleccionado && <div className="absolute -bottom-1 w-1 h-1 bg-white rounded-full"></div>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* HORARIOS DEL DÍA SELECCIONADO */}
+      {fechaSeleccionada && (
+        <div className="mb-4 animate-slide-up">
+          <h2 className="font-bold text-xl text-base-content mb-4 flex items-center gap-2">
+            <FaClock className="text-secondary" /> Horarios: {fechaSeleccionada.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+          </h2>
+          <div className="flex flex-col gap-4">
+            {horarios.map((h) => (
+              <div key={h.id} className={`glass-panel rounded-2xl overflow-hidden border-l-4 ${getColorDeporte(h.deporte)} transition-all cursor-pointer ${mostrarFormulario === h.id ? 'ring-2 ring-primary scale-[1.02]' : 'hover:scale-[1.01]'}`}
+                onClick={() => h.disponible ? setMostrarFormulario(h.id) : null}>
+                <div className="p-5 flex justify-between items-center bg-base-100/40">
+                  <div>
+                    <h3 className="font-extrabold text-lg text-base-content tracking-tight">{h.hora}</h3>
+                    <p className="text-xs text-base-content/60 font-medium uppercase tracking-wider mt-1">{h.turno}</p>
+                  </div>
+                  <span className={`px-4 py-1.5 rounded-full text-xs font-bold border ${h.disponible ? 'bg-success/10 text-success border-success/20' : 'bg-error/10 text-error border-error/20'}`}>
+                    {h.disponible ? 'Disponible' : 'Ocupado'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* FORMULARIO DE RESERVA */}
+      {mostrarFormulario && (
+        <div className="mt-8 animate-slide-up">
+          <div className="glass-panel bg-primary text-primary-content rounded-3xl p-1">
+            <div className="bg-base-100/80 rounded-[1.35rem] p-6 backdrop-blur-xl">
+              <h3 className="font-bold text-xl text-base-content mb-2">Confirmar Reserva</h3>
+              <p className="text-base-content/80 text-sm mb-6">Bloque seleccionado: <span className="text-base-content font-bold">{horarios.find(h => h.id === mostrarFormulario)?.hora}</span></p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Tu Nombre</label>
+                  <input type="text" placeholder="Ej. Juan Pérez" className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-primary transition-all" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-base-content/70 uppercase tracking-wider mb-1 block">Teléfono</label>
+                  <input type="tel" placeholder="Ej. 5555-5555" className="w-full bg-base-200/50 border border-base-content/ rounded-xl px-4 py-3 text-base-content focus:outline-none focus:ring-2 focus:ring-primary transition-all" />
+                </div>
+                
+                <button className="w-full bg-primary text-primary-content hover:from-primary/90 hover:to-accent/90 text-base-content font-bold py-4 rounded-xl shadow-lg shadow-primary/30 transition-all active:scale-95 mt-4">
+                  Confirmar Reserva Ahora
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+src/App.tsx
+import Router from "../src/ui/app/Router"
+
+function App() {
+  return <Router />
+}
+
+export default App
+
+
+src/index.css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-base-100 text-base-content antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .sport-card-football {
+    @apply border-l-4 border-football-green;
+  }
+  .sport-card-basketball {
+    @apply border-l-4 border-basketball-orange;
+  }
+  .sport-card-volleyball {
+    @apply border-l-4 border-volleyball-blue;
+  }
+  .glass-panel {
+    @apply bg-base-100/60 backdrop-blur-md border border-base-content/10 shadow-xl;
+  }
+  .glass-navbar {
+    @apply bg-base-100/80 backdrop-blur-lg border-b border-base-content/10;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+
+src/main.tsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+tailwind.config.js
+ /** @type {import('tailwindcss').Config} */
+import daisyui from 'daisyui'
+
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        'football-green': '#10b981', // emerald-500
+        'basketball-orange': '#f97316', // orange-500
+        'volleyball-blue': '#0ea5e9', // sky-500
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        'slide-up': {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        }
+      },
+      animation: {
+        'fade-in': 'fade-in 0.5s ease-out',
+        'slide-up': 'slide-up 0.5s ease-out',
+      }
+    },
+  },
+  plugins: [daisyui],
+  daisyui: {
+    themes: [
+      "light",
+      "dark"
+    ],
+    darkTheme: "dark",
+    base: true,
+    styled: true,
+    utils: true,
+    rtl: false,
+    prefix: "",
+    logs: false,
+  },
+}
+
+
+vite.config.ts 
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+})

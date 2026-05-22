@@ -1,2 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-base-100 text-base-content antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .sport-card-football {
+    @apply border-l-4 border-football-green;
+  }
+  .sport-card-basketball {
+    @apply border-l-4 border-basketball-orange;
+  }
+  .sport-card-volleyball {
+    @apply border-l-4 border-volleyball-blue;
+  }
+  .glass-panel {
+    @apply bg-base-100/60 backdrop-blur-md border border-base-content/10 shadow-xl;
+  }
+  .glass-navbar {
+    @apply bg-base-100/80 backdrop-blur-lg border-b border-base-content/10;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
