@@ -7,7 +7,6 @@ export default function HomePage() {
   return (
     <div className="pb-10 animate-fade-in">
       
-      {/* Hero Section */}
       <div className="relative w-full h-[400px] md:h-[500px] md:rounded-b-3xl overflow-hidden shadow-2xl mb-8 -mt-4 md:mt-0 bg-base-300 group">
         <img 
           src="/hero_banner.png" 

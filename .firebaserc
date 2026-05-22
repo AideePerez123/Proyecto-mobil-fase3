@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "comtrin-pwa"
-  }
+    "default": "comtrin-pwa",
+    "fase3": "comtrin-pwa-fase3-final"
+  },
+  "targets": {},
+  "etags": {}
 }

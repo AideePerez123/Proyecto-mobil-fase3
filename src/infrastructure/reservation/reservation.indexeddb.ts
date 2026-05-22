@@ -5,7 +5,7 @@ const STORE_NAME = "reservas";
 
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
+    const request = indexedDB.open(DB_NAME, 2);
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
     request.onupgradeneeded = (event) => {
@@ -13,6 +13,14 @@ function openDB(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
         store.createIndex("fecha", "fecha", { unique: false });
+      } else {
+        const transaction = (event.target as IDBOpenDBRequest).transaction;
+        if (transaction) {
+          const store = transaction.objectStore(STORE_NAME);
+          if (!store.indexNames.contains("fecha")) {
+            store.createIndex("fecha", "fecha", { unique: false });
+          }
+        }
       }
     };
   });
@@ -20,10 +28,10 @@ function openDB(): Promise<IDBDatabase> {
 
 export async function saveReservation(reservation: Reservation): Promise<void> {
   const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  const store = tx.objectStore(STORE_NAME);
+  store.put(reservation);
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const store = tx.objectStore(STORE_NAME);
-    store.put(reservation);
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });

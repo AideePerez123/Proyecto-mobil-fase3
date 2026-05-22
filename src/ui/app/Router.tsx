@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Layout from '../components/layout/Layout'
-import HomePage from '../pages/HomePage'
-import ReservasPage from '../pages/ResevasPage'
-import PadrinosPage from '../pages/PadrinosPage'
-import AsistenciaPage from '../pages/AsistenciaPage'
-import JovenesPage from '../pages/JovenesPage'
-import VotacionesPage from '../pages/VotacionesPage'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from '../components/layout/Layout';
+import HomePage from '../pages/HomePage';
+import ReservasPage from '../pages/ReservasPage';   
+import PadrinosPage from '../pages/PadrinosPage';
+import AsistenciaPage from '../pages/AsistenciaPage';
+import JovenesPage from '../pages/JovenesPage';
+import VotacionesPage from '../pages/VotacionesPage';
 
 export default function Router() {
   return (
@@ -21,5 +21,5 @@ export default function Router() {
         </Route>
       </Routes>
     </BrowserRouter>
-  )
+  );
 }

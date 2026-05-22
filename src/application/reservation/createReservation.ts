@@ -1,5 +1,5 @@
 import type { Reservation } from "../../domain/reservation/reservation.type";
-import { saveReservation, loadReservationsByDate } from "../../infrastructure/reservation/reservation.indexddb";
+import { saveReservationToFirestore, loadReservationsFromFirestore } from "../../infrastructure/reservation/reservation.firestore";
 
 export async function createReservation(
   fecha: string,
@@ -10,8 +10,8 @@ export async function createReservation(
   if (!nombre.trim()) throw new Error("El nombre es obligatorio.");
   if (!telefono.trim()) throw new Error("El teléfono es obligatorio.");
 
-  const existing = await loadReservationsByDate(fecha);
-  const alreadyReserved = existing.some(r => r.horarioId === horarioId);
+  const existing = await loadReservationsFromFirestore(fecha);
+  const alreadyReserved = existing.some((r: Reservation) => r.horarioId === horarioId);
   if (alreadyReserved) throw new Error("Este horario ya está reservado.");
 
   const reservation: Reservation = {
@@ -21,5 +21,5 @@ export async function createReservation(
     nombre: nombre.trim(),
     telefono: telefono.trim(),
   };
-  await saveReservation(reservation);
+  await saveReservationToFirestore(reservation);
 }

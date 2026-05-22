@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Reservation } from "../../domain/reservation/reservation.type";
-import { loadReservationsByDate } from "../../infrastructure/reservation/reservation.indexddb";
+import { loadReservationsFromFirestore } from "../../infrastructure/reservation/reservation.firestore";
 
 export function useReservations(fecha: string | null) {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -12,7 +12,7 @@ export function useReservations(fecha: string | null) {
       return;
     }
     setIsLoading(true);
-    const data = await loadReservationsByDate(fecha);
+    const data = await loadReservationsFromFirestore(fecha);
     setReservations(data);
     setIsLoading(false);
   };
