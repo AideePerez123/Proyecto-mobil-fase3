@@ -7,7 +7,7 @@ export async function createDonation(
   metodo: string,
   comprobante?: string
 ): Promise<Donation> {
-  if (!nombre.trim()) throw new Error("Su nombre es obligatorio, si escriba anonimo");
+  if (!nombre.trim()) throw new Error("Su nombre es obligatorio, o puede escribir anonimo");
   if (monto <= 0) throw new Error("El monto debe ser mayor a cero.");
 
   const newDonation: Donation = {

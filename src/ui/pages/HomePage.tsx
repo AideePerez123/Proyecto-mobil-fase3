@@ -44,7 +44,7 @@ export default function HomePage() {
             <FaTrophy className="text-warning" /> ¿De qué trata esta app?
           </h2>
           <p className="text-base-content/80 leading-relaxed font-medium">
-            Somos una academia deportiva sin fines de lucro ubicada en el Barrio el Gallito. Nuestra misión es ofrecer un espacio seguro de formación para jóvenes de 5 a 18 años. Aquí podrás reservar la cancha para tus partidos nocturnos, apadrinar a un joven en situación vulnerable, y como padre, monitorear la asistencia de tu hijo en tiempo real.
+            Somos una academia deportiva sin fines de lucro ubicada en el Barrio el Gallito. Nuestra misión es ofrecer un espacio seguro de formación para jóvenes de 9 a 18 años. Aquí podrás reservar la cancha para tus partidos nocturnos,en la reserva de cancha o el alquiler no importa tu edad, apadrinar a un joven en situación vulnerable, y como padre, monitorear la asistencia de tu hijo en tiempo real.
           </p>
         </div>
 

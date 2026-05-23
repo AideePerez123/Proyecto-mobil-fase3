@@ -129,7 +129,7 @@ export default function ReservasPage() {
         </div>
       </div>
 
-     
+    
       {fechaSeleccionada && (
         <div className="mb-4 animate-slide-up">
           <h2 className="font-bold text-xl mb-4 flex items-center gap-2"><FaClock className="text-secondary" /> Horarios: {fechaSeleccionada.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</h2>
